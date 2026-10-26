@@ -18,30 +18,33 @@
 ---
 
 You are twelve tangents deep, the context compacted once, and somewhere in there you agreed to
-something you cannot remember. Type `/kowalski`:
+something you cannot remember. Type `/kowalski` and get this:
 
 > ### Kowalski, analysis
 >
-> **Mission:** Ship /kowalski as a skill, private repo first
+> **Mission:** Get the nightly build green again and stop the disk from filling up.
 >
 > **Done**
-> - Slug approved: `kowalski-analysis`.
-> - Output format settled.
+> - The build server's disk was grown from 80 to 120 GB; 91 GB is free.
+> - The worker container's memory limit went from 256m to 1g, and it stopped crash-looping.
+> - The `cache-cleanup` script is fixed, and its tests pass.
 >
 > **In flight:** *nothing*
 >
-> **Next:** Wire the local install and run the acceptance tests.
+> **Next:** Open a PR for the `target/` cleanup in the CI config.
 >
 > **Needs you**
-> - The repo is private; going public is your call.
+> - Rotate the deploy token; only you have access to it.
+> - Should idle worktrees be cleaned automatically, or only on request?
 >
 > **Snags**
-> - Two assumptions were corrected mid-flight.
+> - This session was compacted, so the first hour isn't visible.
+> - The fix for the flaky `sync` test is assumed, not proven; it passed once.
 >
 > **On disk**
-> - 8 files untracked, no commits yet.
+> - `fix/cache-cleanup`: 2 commits not pushed.
 >
-> `<(o_o)>` *Analysis complete.*
+> `<(O_O)>` *We have a situation.*
 
 It's plain Markdown, so it renders natively in the terminal and wraps cleanly in narrow clients
 such as mobile apps, where a fixed-width box would break.
