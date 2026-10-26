@@ -11,7 +11,7 @@
 
 <p align="center">
   <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg">
-  <img alt="Claude Code v2.1.220" src="https://img.shields.io/badge/Claude%20Code-v2.1.220-d97757.svg">
+  <img alt="Claude Code v2.1.310" src="https://img.shields.io/badge/Claude%20Code-v2.1.310-d97757.svg">
   <img alt="Always-on cost: zero" src="https://img.shields.io/badge/always--on%20cost-zero-2f9e6e.svg">
 </p>
 
@@ -20,20 +20,31 @@
 You are twelve tangents deep, the context compacted once, and somewhere in there you agreed to
 something you cannot remember. Type `/kowalski`:
 
-```
-KOWALSKI, ANALYSIS
-══════════════════════════════════════════════════
-Mission     Ship /kowalski as a skill, private repo first
-Done        · slug approved: kowalski-analysis
-            · output format settled
-In flight   nothing
-Next        wire the local install and run the acceptance tests
-Needs you   · repo is private; going public is your call
-Snags       · two assumptions corrected mid-flight
-On disk     · 8 files untracked, no commits yet
-──────────────────────────────────────────────────
-<(o_o)>  Analysis complete.
-```
+> ### Kowalski, analysis
+>
+> **Mission:** Ship /kowalski as a skill, private repo first
+>
+> **Done**
+> - Slug approved: `kowalski-analysis`.
+> - Output format settled.
+>
+> **In flight:** *nothing*
+>
+> **Next:** Wire the local install and run the acceptance tests.
+>
+> **Needs you**
+> - The repo is private; going public is your call.
+>
+> **Snags**
+> - Two assumptions were corrected mid-flight.
+>
+> **On disk**
+> - 8 files untracked, no commits yet.
+>
+> `<(o_o)>` *Analysis complete.*
+
+It's plain Markdown, so it renders natively in the terminal and wraps cleanly in narrow clients
+such as mobile apps, where a fixed-width box would break.
 
 ## Install
 
@@ -43,7 +54,7 @@ git clone https://github.com/Aethryl/kowalski-analysis ~/.claude/skills/kowalski
 
 Then `/reload-skills`, or start a new session. The command comes from the frontmatter, not the
 directory, so the folder can be called anything. Needs Claude Code new enough for
-`disable-model-invocation` in skill frontmatter; built against v2.1.220.
+`disable-model-invocation` in skill frontmatter; tested on v2.1.310.
 
 ## What it costs
 
