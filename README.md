@@ -17,37 +17,42 @@
 
 ---
 
-You are twelve tangents deep, the context compacted once, and somewhere in there you agreed to
-something you cannot remember. Type `/kowalski` and get this:
+You are twelve tangents deep, the context compacted once, three agents are off in their own
+worktrees, and you cannot remember which of their results you have actually checked. Type
+`/kowalski` and get this:
 
 > ### Kowalski, analysis
 >
-> **Mission:** Get the nightly build green again and stop the disk from filling up.
+> **Mission:** Ship per-tenant rate limits in the API and retire the old global throttle.
+> *Compacted: history before the schema discussion not visible*
 >
-> **Done**
-> - The build server's disk was grown from 80 to 120 GB; 91 GB is free.
-> - The worker container's memory limit went from 256m to 1g, and it stopped crash-looping.
-> - The `cache-cleanup` script is fixed, and its tests pass.
+> **Objectives**
+> 1. Rate-limit middleware: verified, `a41c9e2`
+>    - limiter, sonnet, `~/Repos/Worktrees/api/rate-limit`: returned
+> 2. Drop the global throttle: returned
+>    - cleanup, sonnet, `~/Repos/Worktrees/api/drop-throttle`: returned
+> 3. Docs page for the new limits: planned
 >
 > **In flight:** *nothing*
 >
-> **Next:** Open a PR for the `target/` cleanup in the CI config.
+> **Next:** Verify the `drop-throttle` diff and run its tests.
 >
 > **Needs you**
-> - Rotate the deploy token; only you have access to it.
-> - Should idle worktrees be cleaned automatically, or only on request?
+> - Decide: keep the old `X-Throttle` header for one release, or remove it now?
+> - Review: `~/Repos/Worktrees/api/rate-limit`, ready for your eyes.
 >
-> **Snags**
-> - This session was compacted, so the first hour isn't visible.
-> - The fix for the flaky `sync` test is assumed, not proven; it passed once.
->
-> **On disk**
-> - `fix/cache-cleanup`: 2 commits not pushed.
->
-> `<(O_O)>` *We have a situation.*
+> 🐧❗ *We have a situation.*
 
 It's plain Markdown, so it renders natively in the terminal and wraps cleanly in narrow clients
 such as mobile apps, where a fixed-width box would break.
+
+## What it does
+
+It briefs you as an orchestrator: the mission, then each objective with its state, and under it
+the agent working on it (name, model, worktree). Every objective sits on one ladder, `planned`,
+`dispatched`, `returned`, `verified`, `reported`, then `committed`, `pushed` or `MR !n`, so a
+result an agent returned but nobody checked stands out. Needs you holds only decisions and
+reviews. A session with no agents still gets a valid briefing.
 
 ## Install
 
@@ -67,9 +72,10 @@ keeps the description and the body out of the preload entirely. You are the trig
 never needs to be chosen. Measured rather than estimated — with the flag on, the skill is
 absent from a live session's skill listing; take the flag off and it appears.
 
-The briefing itself is recalled from the session already in context. It never re-reads the
-transcript or re-runs tools. The only thing it touches on disk is `git status`, and only when
-the session actually wrote something.
+The briefing is recalled from the session already in context. It never reads the transcript,
+agent transcripts or agent output files. It runs a few light read-only probes in parallel, each
+skipped when it doesn't apply: the live agent roster and `mr-status ls`. Nothing else is
+touched.
 
 ## What it will not do
 

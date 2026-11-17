@@ -2,14 +2,15 @@
 name: kowalski
 description: Status briefing for the current session.
 disable-model-invocation: true
-allowed-tools: Bash(git status:*), Bash(git rev-list:*)
+allowed-tools: ListAgents, Bash(mr-status ls:*)
 ---
 
 # Kowalski, analysis
 
-Brief the user on the current session, recalled from context. This is a recollection, not an
-investigation: do not read the transcript, re-read files or re-run tools to recheck what you
-already know.
+Brief the user on the current session as an orchestrator: what is being pursued, who is doing
+each part, and how far each part has got. Recall is the base. Do not read the transcript, agent
+transcripts or agent output files, and do not re-read files or re-run tools to recheck what you
+already know. The probes below are the only live checks.
 
 ## Output
 
@@ -21,68 +22,90 @@ narrow screen, so every line is ordinary prose that can wrap anywhere.
 ### Kowalski, analysis
 
 **Mission:** the goal in the user's terms, not the last tangent
+*Compacted: history before <point> not visible*
 
-**Done**
-- finished, and verified
+**Objectives**
+1. <objective>: <state>, `<sha>` or MR !n
+   - <agent name>, <model>, `<tree>`: <agent state>
+2. ...
 
 **In flight:** running agents and background shells, or *nothing*
 
 **Next:** the immediate next action
 
 **Needs you**
-- what is blocked on the user
+- Decide: the open question, with the options
+- Review: the diff or MR ready for the user's eyes, with path or MR ref
 
-**Snags**
-- what broke, what was assumed, what was skipped
-
-**On disk**
-- uncommitted, untracked or unpushed work
-
-`<(o_o)>` *Analysis complete.*
+🐧 *Analysis complete.*
 ```
 
 - Keep the order above. Put a blank line between sections, or Markdown merges them into one
   paragraph.
 - **Mission**, **In flight** and **Next** always appear, each on one line. **In flight** says
   *nothing* when idle, because knowing that nothing is running is the point.
-- **Done**, **Needs you**, **Snags** and **On disk** are bullet lists. Leave a section out
-  entirely when it is empty; never write "none".
+- The *Compacted* line sits directly under **Mission**, only when the session was compacted. It
+  names what you therefore cannot see. A recap that silently covers only post-compaction history
+  is a lie, and the likeliest way this briefing misleads.
+- **Objectives** is a numbered list, one item per goal being pursued. Give the state from the
+  ladder below, plus the commit sha or MR once one exists. A solo session with no agents still
+  lists its objectives, with no nested bullets.
+- The agent bullet is the only nesting allowed: one per agent under its objective, with name,
+  model, tree and state (`running`, `returned`, `failed` or `stopped`). Work done by this
+  session itself is marked `inline` in place of an agent.
+- **Needs you** is a bullet list. Leave it out entirely when it is empty; never write "none".
 - Each bullet is one short sentence. Put paths, commands, branches and IDs in `inline code`.
-  No nested bullets, no bold inside bullets.
+  No bold inside bullets.
+
+## State ladder
+
+An objective's state is one word, in this order: `planned`, `dispatched`, `returned`,
+`verified`, `reported`, then `committed`, `pushed` or `MR !n`. State is a fact about the
+objective, not a mood.
+
+- `reported` means not committed yet, so uncommitted or unpushed work shows up on the ladder.
+- `verified` means the orchestrator checked the diff and ran the checks. An agent's success
+  report alone is `returned`.
+- Anything that exists only as an intention is `planned`, and goes under **Next** when it is the
+  immediate action.
+- A `returned` objective that is not yet `verified` is the main signal to surface, so say so
+  plainly.
+
+## Probes
+
+Run the probes that apply once, in parallel, all read-only. Skip each one that does not apply.
+
+1. `ListAgents`: the live roster, mapped to objectives by name and recall. Skip when no agents
+   were spawned.
+2. `mr-status ls`: the MR phase per objective. Skip when the command is absent or prints
+   nothing.
+
+`mr-status ls` lists MRs from other sessions too, so report only entries this session owns or dispatched. A probe that errors or times out is skipped silently; fall back to recall.
 
 ## Rules
 
-1. **Done means verified.** Separate "wrote it" from "ran it and it passed". Anything that exists
-   only as an intention goes under **Next**, never **Done**.
-2. **Say when the session was compacted.** Put it under **Snags** and name what you therefore
-   cannot see. A recap that silently covers only post-compaction history is a lie, and it is the
-   likeliest way this briefing misleads.
-3. **Needs you is for real blocks:** decisions waiting on the user, questions asked and never
-   answered, and commands only they run, such as full test suites, migrations and data scripts.
-4. **On disk needs one probe, and only if this session wrote files:**
-
-   ```sh
-   git status --short -b; git rev-list --count '@{upstream}..HEAD' 2>/dev/null
-   ```
-
-   Quote `'@{upstream}..HEAD'`, or the brace-expansion guard rejects the command. Skip the probe
-   in a read-only session, and leave the section out when the tree is clean. A branch with no
-   upstream is normal: report nothing, not a snag.
-5. **At most five bullets per section.** Beyond five, keep the most recent and end with a bullet
+1. **Done means verified.** Separate "wrote it" from "ran it and it passed" by the state ladder.
+2. **Needs you has exactly two kinds of bullet:** `Decide:` for questions waiting on the user
+   and `Review:` for work ready for their eyes. A command only the user runs, such as a
+   migration or a remote script, is a `Decide:` phrased as an approval.
+3. **At most five bullets per section.** Beyond five, keep the most recent and end with a bullet
    saying `+N more`. Never truncate silently.
-6. **An empty session gets the three mandatory lines and the footer.** Do not invent a mission.
+4. **An empty session gets the three mandatory lines and the footer.** Do not invent a mission.
 
 ## Footer
 
-The last line is one penguin in inline code and one italic sign-off, chosen from the actual state:
+The last line is one emoji with a mood mark and one italic sign-off, as plain text, not inline
+code. Take the first row that matches the actual state:
 
-| Penguin | Sign-off | When |
+| Emoji | Sign-off | When |
 |---|---|---|
-| `<(o_o)>` | *Analysis complete.* | all clear |
-| `<(O_O)>` | *We have a situation.* | something is blocked on the user |
-| `<(-_-)>` | *Just smile and wave, boys.* | nothing left to do |
-| `<(x_x)>` | *You didn't see anything.* | something failed |
+| 🐧❗ | *We have a situation.* | Needs you is not empty |
+| 🐧💥 | *You didn't see anything.* | an agent or check failed |
+| 🐧👋 | *Just smile and wave, boys.* | everything is pushed or reported |
+| 🐧 | *Analysis complete.* | otherwise |
 
-The title, the penguin and the sign-off are the whole joke budget. Never let the bit soften,
-inflate or reword a fact. If the session went badly, say so plainly and let the penguin look
+The title, the emoji and the sign-off are the whole joke budget. Never let the bit soften,
+inflate or reword a fact. If the session went badly, say so plainly and let the emoji look
 worried.
+
+A filled-in briefing is in [references/example.md](references/example.md).
