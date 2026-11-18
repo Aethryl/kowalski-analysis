@@ -73,9 +73,8 @@ never needs to be chosen. Measured rather than estimated — with the flag on, t
 absent from a live session's skill listing; take the flag off and it appears.
 
 The briefing is recalled from the session already in context. It never reads the transcript,
-agent transcripts or agent output files. It runs a few light read-only probes in parallel, each
-skipped when it doesn't apply: the live agent roster and `mr-status ls`. Nothing else is
-touched.
+agent transcripts or agent output files. It runs one light read-only probe, skipped when
+it doesn't apply: the live agent roster. Nothing else is touched.
 
 ## What it will not do
 

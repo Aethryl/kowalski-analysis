@@ -2,7 +2,7 @@
 name: kowalski
 description: Status briefing for the current session.
 disable-model-invocation: true
-allowed-tools: ListAgents, Bash(mr-status ls:*)
+allowed-tools: ListAgents
 ---
 
 # Kowalski, analysis
@@ -73,14 +73,11 @@ objective, not a mood.
 
 ## Probes
 
-Run the probes that apply once, in parallel, all read-only. Skip each one that does not apply.
+Run the probe once; it is read-only. Skip it when it does not apply.
 
 1. `ListAgents`: the live roster, mapped to objectives by name and recall. Skip when no agents
    were spawned.
-2. `mr-status ls`: the MR phase per objective. Skip when the command is absent or prints
-   nothing.
-
-`mr-status ls` lists MRs from other sessions too, so report only entries this session owns or dispatched. A probe that errors or times out is skipped silently; fall back to recall.
+A probe that errors or times out is skipped silently; fall back to recall.
 
 ## Rules
 
